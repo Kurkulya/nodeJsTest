@@ -15,7 +15,7 @@ app.use('/users', generateRoutes(UserController, ['index', 'create', 'delete', '
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use((err, req, res, next) => {
-    console.error(err.stack);
+    console.error(err.message);
     res.status(err.status || 500).json(err);
 });
 

@@ -1,11 +1,5 @@
 
-const tryCatch = (callback) => async (req, res, next) => {
-    try {
-        await callback(req, res)
-    } catch(e) {
-        next(e);
-    }
-}
+const { tryCatch } = require('../helpers/controllers');
 
 class BaseController {
     delete(callback) {
