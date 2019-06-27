@@ -1,7 +1,17 @@
 
-const { tryCatch } = require('../helpers/controllers');
+const tryCatch = (callback) => async (req, res, next) => {
+    try {
+        await callback(req, res)
+    } catch(e) {
+        next(e);
+    }
+}
 
 class BaseController {
+    constructor(serializer) {
+        this.serializer = serializer;
+    }
+
     delete(callback) {
         return tryCatch(async (req, res) => {
             await callback(req, res);

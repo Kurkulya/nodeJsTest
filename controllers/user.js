@@ -1,19 +1,7 @@
 const User = require('../models/user');
-const BaseController = require('./base');
 const userSerializer = require('../views/user');
+const { generateController } = require('../helpers/controllers');
 
-class UserController extends BaseController {
-    constructor() {
-        super();
-        this.serializer = userSerializer;
+const UserController = generateController();
 
-        this.delete = super.delete(async (req, res) => User.delete(req.params.id));
-        this.index = super.show(async (req, res) => User.get())
-        this.create = super.create(async (req, res) => User.create(req.body))
-        this.update = super.show(async (req, res) => User.update(req.params.id, req.body))
-        this.show = super.show(async (req, res) => User.show(req.params.id))
-    }
-
-}
-
-module.exports = new UserController();
+module.exports = new UserController(userSerializer, User);
