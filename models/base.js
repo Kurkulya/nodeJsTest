@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const { isValidId } = require('../helpers/utils');
 
 class BaseModel {
     constructor(model, name) {
@@ -7,6 +7,8 @@ class BaseModel {
     }
 
     async findById (id) {
+        if(!isValidId(id)) throw { status: 422, message: 'Invalid id' };
+
         const result = await this.model.findById(id).lean();
         if(!result) throw { status: 404, message: `${this.name} not found` };
     

@@ -1,4 +1,6 @@
 
+const { serialize } = require('../helpers/views');
+
 const tryCatch = (callback) => async (req, res, next) => {
     try {
         await callback(req, res)
@@ -8,25 +10,32 @@ const tryCatch = (callback) => async (req, res, next) => {
 }
 
 class BaseController {
-    constructor(serializer) {
-        this.serializer = serializer;
+    constructor(serializer, model) {
+        this.serializer = (data) => serialize(data, serializer);
+        this.model = model;
+
+        this.delete = this.deleteAction(async (req, res) => model.delete(req.params.id));
+        this.index = this.showAction(async (req, res) => model.get())
+        this.create = this.createAction(async (req, res) => model.create(req.body))
+        this.update = this.showAction(async (req, res) => model.update(req.params.id, req.body))
+        this.show = this.showAction(async (req, res) => model.show(req.params.id))
     }
 
-    delete(callback) {
+    deleteAction(callback) {
         return tryCatch(async (req, res) => {
             await callback(req, res);
             res.status(204).send('Deleted');
         });
     }
 
-    create(callback) {
+    createAction(callback) {
         return tryCatch(async (req, res) => {
             const data = await callback(req, res);
             res.status(201).json(this.serializer(data));
         });
     }
 
-    show(callback) {
+    showAction(callback) {
         return tryCatch(async (req, res) => {
             const data = await callback(req, res);
             res.json(this.serializer(data));

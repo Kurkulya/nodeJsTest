@@ -1,7 +1,14 @@
 const Restaurant = require('../models/restaurant');
-const restaurantSerializer = require('../views/restaurant');
-const { generateController } = require('../helpers/controllers');
+const BaseController = require('./base');
+const { restaurantSerializer } = require('../views/serializers');
 
-const RestaurantController = generateController();
+class RestaurantController extends BaseController {
+    constructor(serializer, model) {
+        super(serializer, model);
+
+        this.addRegionManager = super.showAction((req, res) => this.model.addManager(req.params.id, req.body))
+
+    }
+}
 
 module.exports = new RestaurantController(restaurantSerializer, Restaurant);
